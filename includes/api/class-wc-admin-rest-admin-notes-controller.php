@@ -92,7 +92,7 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 	public function get_items( $request ) {
 		$per_page = isset( $request['per_page'] ) ? intval( $request['per_page'] ) : 10;
 		if ( $per_page <= 0 ) {
-			$per_page = 1;
+			$per_page = 10;
 		}
 
 		$page = isset( $request['page'] ) ? intval( $request['page'] ) : 1;
@@ -162,7 +162,12 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 		$data['date_created']      = wc_rest_prepare_date_response( $data['date_created'], false );
 		$data['date_reminder_gmt'] = wc_rest_prepare_date_response( $data['date_reminder'] );
 		$data['date_reminder']     = wc_rest_prepare_date_response( $data['date_reminder'], false );
-		$data                      = $this->filter_response_by_context( $data, $context );
+		$data['title']             = stripslashes( $data['title'] );
+		$data['content']           = stripslashes( $data['content'] );
+		foreach ( (array) $data['actions'] as $key => $value ) {
+			$data['actions'][ $key ]->label = stripslashes( $data['actions'][ $key ]->label );
+		}
+		$data = $this->filter_response_by_context( $data, $context );
 
 		// Wrap the data in a response object.
 		$response = rest_ensure_response( $data );
@@ -209,7 +214,7 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 		);
 
 		$schema['properties']['type'] = array(
-			'description' => __( 'Type of the note.', 'wc-admin' ),
+			'description' => __( 'The type of the note (e.g. error, warning, etc.).', 'wc-admin' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 			'readonly'    => true,
@@ -251,7 +256,7 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 		);
 
 		$schema['properties']['status'] = array(
-			'description' => __( 'Status of the note.', 'wc-admin' ),
+			'description' => __( 'The status of the note (e.g. unactioned, actioned).', 'wc-admin' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 			'readonly'    => true,
