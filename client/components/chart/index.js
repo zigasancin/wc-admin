@@ -201,6 +201,9 @@ class Chart extends Component {
 		} = this.props;
 		const legendDirection = layout === 'standard' && width >= WIDE_BREAKPOINT ? 'row' : 'column';
 		const chartDirection = layout === 'comparison' && width >= WIDE_BREAKPOINT ? 'row' : 'column';
+		let chartHeight = width > 1329 ? 300 : 220;
+		chartHeight = width <= 1329 && width > 783 ? 220 : chartHeight;
+		chartHeight = width <= 783 ? 180 : chartHeight;
 		const legend = (
 			<Legend
 				className={ 'woocommerce-chart__legend' }
@@ -264,7 +267,7 @@ class Chart extends Component {
 							colorScheme={ d3InterpolateViridis }
 							data={ visibleData }
 							dateParser={ dateParser }
-							height={ 300 }
+							height={ chartHeight }
 							margin={ margin }
 							mode={ mode }
 							orderedKeys={ orderedKeys }
