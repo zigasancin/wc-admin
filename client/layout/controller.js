@@ -54,24 +54,28 @@ class Controller extends Component {
 		const search = this.props.location.search.substring( 1 );
 		const query = parse( search );
 		const page = find( getPages(), { path } );
-		window.wpNavMenuUrlUpdate( query );
+		window.wpNavMenuUrlUpdate( page.wpMenu, query );
 		window.wpNavMenuClassChange( page.wpMenu, this.props.location.pathname );
 		return createElement( page.container, { params, path: url, pathMatch: path, query } );
 	}
 }
 
-window.wpNavMenuUrlUpdate = function( { period, compare, after, before } ) {
+// Update links in wp-adming menu to persist time related queries
+window.wpNavMenuUrlUpdate = function( menuClass, { period, compare, after, before } ) {
 	const timeRelatedQuery = omitBy( { period, compare, after, before }, isUndefined );
 	const search = stringifyQuery( timeRelatedQuery );
 
-	Array.from( document.querySelectorAll( '#toplevel_page_wc-admin--analytics a' ) ).forEach(
-		function( item ) {
-			const hashUrl = last( item.href.split( 'wc-admin#' ) );
-			const base = hashUrl.split( '?' )[ 0 ];
-			const href = '/wp-admin/admin.php?page=wc-admin#' + base + search;
-			item.href = href;
-		}
-	);
+	Array.from( document.querySelectorAll( `#${ menuClass } a` ) ).forEach( item => {
+		/**
+		 * Example href:
+		 *
+		 * http://example.com/wp-admin/admin.php?page=wc-admin#/analytics/orders?period=today&compare=previous_year
+		 */
+		const hashUrl = last( item.href.split( 'wc-admin#' ) );
+		const base = hashUrl.split( '?' )[ 0 ];
+		const href = '/wp-admin/admin.php?page=wc-admin#' + base + search;
+		item.href = href;
+	} );
 };
 
 // When the route changes, we need to update wp-admin's menu with the correct section & current link
