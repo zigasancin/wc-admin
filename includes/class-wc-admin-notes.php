@@ -58,4 +58,19 @@ class WC_Admin_Notes {
 		}
 		return false;
 	}
+
+	/**
+	 * Deletes admin notes with a given name.
+	 *
+	 * @param string $name Name to search for.
+	 */
+	public static function delete_notes_with_name( $name ) {
+		$data_store = WC_Data_Store::load( 'admin-note' );
+		$note_ids   = $data_store->get_notes_with_name( $name );
+		foreach ( (array) $note_ids as $note_id ) {
+			$note = new WC_Admin_Note( $note_id );
+			$note->set_id( $note_id );
+			$note->delete();
+		}
+	}
 }

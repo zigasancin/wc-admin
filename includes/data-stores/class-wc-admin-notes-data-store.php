@@ -33,9 +33,7 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 			'source'  => $note->get_source(),
 		);
 
-		$encoding_options = defined( 'JSON_FORCE_OBJECT' ) ? JSON_FORCE_OBJECT : 0;
-
-		$note_to_be_inserted['content_data']  = wp_json_encode( $note->get_content_data(), $encoding_options );
+		$note_to_be_inserted['content_data']  = wp_json_encode( $note->get_content_data() );
 		$note_to_be_inserted['date_created']  = gmdate( 'Y-m-d H:i:s', $date_created );
 		$note_to_be_inserted['date_reminder'] = null;
 
@@ -104,7 +102,6 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 	 */
 	public function update( &$note ) {
 		global $wpdb;
-		$encoding_options = defined( 'JSON_FORCE_OBJECT' ) ? JSON_FORCE_OBJECT : 0;
 
 		if ( $note->get_id() ) {
 			$wpdb->update(
@@ -115,7 +112,7 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 					'title'         => $note->get_title(),
 					'content'       => $note->get_content(),
 					'icon'          => $note->get_icon(),
-					'content_data'  => wp_json_encode( $note->get_content_data(), $encoding_options ),
+					'content_data'  => wp_json_encode( $note->get_content_data() ),
 					'status'        => $note->get_status(),
 					'source'        => $note->get_source(),
 					'date_created'  => $note->get_date_created(),
@@ -138,13 +135,13 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 	 */
 	public function delete( &$note, $args = array() ) {
 		$note_id = $note->get_id();
-		if ( $note->get_id() ) {
+		if ( $note_id ) {
 			global $wpdb;
 			$wpdb->delete( $wpdb->prefix . 'woocommerce_admin_notes', array( 'note_id' => $note_id ) );
 			$wpdb->delete( $wpdb->prefix . 'woocommerce_admin_note_actions', array( 'note_id' => $note_id ) );
 			$note->set_id( null );
 		}
-		do_action( 'woocommerce_trash_note', $id );
+		do_action( 'woocommerce_trash_note', $note_id );
 	}
 
 	/**
@@ -203,6 +200,22 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 	 */
 	public function get_notes() {
 		global $wpdb;
-		return $wpdb->get_results( "SELECT note_id, title, content FROM {$wpdb->prefix}woocommerce_admin_notes order by note_id ASC;" );
+		return $wpdb->get_results( "SELECT note_id, title, content FROM {$wpdb->prefix}woocommerce_admin_notes ORDER BY note_id ASC;" );
+	}
+
+	/**
+	 * Find all the notes with a given name.
+	 *
+	 * @param string $name Name to search for.
+	 * @return array An array of matching note ids.
+	 */
+	public function get_notes_with_name( $name ) {
+		global $wpdb;
+		return $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT note_id FROM {$wpdb->prefix}woocommerce_admin_notes WHERE name = %s ORDER BY note_id ASC;",
+				$name
+			)
+		);
 	}
 }
