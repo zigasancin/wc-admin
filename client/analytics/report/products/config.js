@@ -74,9 +74,11 @@ export const filters = [
 	{
 		label: __( 'Top Products by Items Sold', 'wc-admin' ),
 		value: 'top_items',
+		query: { orderBy: 'items_sold', order: 'desc' },
 	},
 	{
 		label: __( 'Top Products by Gross Sales', 'wc-admin' ),
 		value: 'top_sales',
+		query: { orderBy: 'gross_revenue', order: 'desc' },
 	},
 ];

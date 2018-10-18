@@ -258,8 +258,8 @@ function getDateValue( period, compare, after, before ) {
  */
 export const getDateParamsFromQuery = ( { period, compare, after, before } ) => {
 	return {
-		period: period || 'today',
-		compare: compare || 'previous_period',
+		period: period || 'month',
+		compare: compare || 'previous_year',
 		after: after ? moment( after ) : null,
 		before: before ? moment( before ) : null,
 	};
