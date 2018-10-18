@@ -48,6 +48,14 @@ function dependencies_satisfied() {
 }
 
 /**
+ * Daily events to run.
+ */
+function wc_admin_daily() {
+	WC_Admin_Notes_New_Sales_Record::possibly_add_sales_record_note();
+}
+add_action( 'wc_admin_daily', 'wc_admin_daily' );
+
+/**
  * Activates wc-admin plugin when installed.
  */
 function activate_wc_admin_plugin() {
@@ -59,9 +67,19 @@ function activate_wc_admin_plugin() {
 
 	WC_Admin_Api_Init::install();
 
+	if ( ! wp_next_scheduled( 'wc_admin_daily' ) ) {
+		wp_schedule_event( time(), 'daily', 'wc_admin_daily' );
+	}
 }
 register_activation_hook( WC_ADMIN_PLUGIN_FILE, 'activate_wc_admin_plugin' );
 
+/**
+ * On deactivating the wc-admin plugin.
+ */
+function deactivate_wc_admin_plugin() {
+	wp_clear_scheduled_hook( 'wc_admin_daily' );
+}
+register_deactivation_hook( WC_ADMIN_PLUGIN_FILE, 'deactivate_wc_admin_plugin' );
 /**
  * Set up the plugin, only if we can detect both Gutenberg and WooCommerce
  */
