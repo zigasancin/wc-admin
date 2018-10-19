@@ -40,7 +40,7 @@ export const filters = [
 		value: 'compare-product',
 		settings: {
 			type: 'products',
-			param: 'product',
+			param: 'include',
 			getLabels: getRequestByIdString( NAMESPACE + 'products', product => ( {
 				id: product.id,
 				label: product.name,

@@ -17,6 +17,7 @@ import { ReportFilters, TableCard } from '@woocommerce/components';
 import ProductsReportChart from './chart';
 
 import products from './__mocks__/data';
+import { getFilterQuery } from 'components/filters/utils';
 
 class ProductsReport extends Component {
 	getHeadersContent() {
@@ -157,6 +158,9 @@ class ProductsReport extends Component {
 
 	render() {
 		const { query, path } = this.props;
+
+		const filterQuery = getFilterQuery( query, filters, [] );
+		console.log( filterQuery );
 
 		return (
 			<Fragment>

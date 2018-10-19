@@ -13,12 +13,13 @@ import { get } from 'lodash';
  * Internal dependencies
  */
 import { EmptyContent, ReportFilters } from '@woocommerce/components';
-import { filters, advancedFilterConfig } from './config';
+import { filters, advancedFilters } from './config';
 import { getAdminLink } from 'lib/nav-utils';
 import { appendTimestamp, getCurrentDates } from 'lib/date';
 import { getReportChartData } from 'store/reports/utils';
 import OrdersReportChart from './chart';
 import OrdersReportTable from './table';
+import { getFilterQuery } from 'components/filters/utils';
 
 class OrdersReport extends Component {
 	constructor( props ) {
@@ -70,7 +71,7 @@ class OrdersReport extends Component {
 					query={ query }
 					path={ path }
 					filters={ filters }
-					advancedConfig={ advancedFilterConfig }
+					advancedConfig={ advancedFilters }
 				/>
 				<OrdersReportChart query={ query } />
 				<OrdersReportTable
@@ -99,6 +100,9 @@ export default compose(
 		const { query } = props;
 		const datesFromQuery = getCurrentDates( query );
 		const primaryData = getReportChartData( 'orders', 'primary', query, select );
+
+		const filterQuery = getFilterQuery( query, filters, advancedFilters.filters );
+		console.log( filterQuery );
 
 		const { getOrders, isGetOrdersError, isGetOrdersRequesting } = select( 'wc-admin' );
 		const tableQuery = {
