@@ -60,7 +60,7 @@ class Controller extends Component {
 	}
 }
 
-// Update links in wp-adming menu to persist time related queries
+// Update links in wp-admin menu to persist time related queries
 window.wpNavMenuUrlUpdate = function( menuClass, { period, compare, after, before } ) {
 	const timeRelatedQuery = omitBy( { period, compare, after, before }, isUndefined );
 	const search = stringifyQuery( timeRelatedQuery );
