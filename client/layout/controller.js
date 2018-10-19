@@ -94,7 +94,7 @@ window.wpNavMenuClassChange = function( menuClass, pathname ) {
 	submenu.classList.add( 'menu-top' );
 
 	Array.from(
-		document.querySelectorAll( `li > a[href$="admin.php?page=wc-admin${ path }"]` )
+		document.querySelectorAll( `li > a[href*="admin.php?page=wc-admin${ path }"]` )
 	).forEach( function( item ) {
 		item.parentElement.classList.add( 'current' );
 	} );
