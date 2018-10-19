@@ -60,7 +60,7 @@ class Controller extends Component {
 	}
 }
 
-// Update links in wp-adming menu to persist time related queries
+// Update links in wp-admin menu to persist time related queries
 window.wpNavMenuUrlUpdate = function( menuClass, { period, compare, after, before } ) {
 	const timeRelatedQuery = omitBy( { period, compare, after, before }, isUndefined );
 	const search = stringifyQuery( timeRelatedQuery );
@@ -71,9 +71,10 @@ window.wpNavMenuUrlUpdate = function( menuClass, { period, compare, after, befor
 		 *
 		 * http://example.com/wp-admin/admin.php?page=wc-admin#/analytics/orders?period=today&compare=previous_year
 		 */
-		const hashUrl = last( item.href.split( 'wc-admin#' ) );
+		const url = item.href.split( 'wc-admin#' );
+		const hashUrl = last( url );
 		const base = hashUrl.split( '?' )[ 0 ];
-		const href = '/wp-admin/admin.php?page=wc-admin#' + base + search;
+		const href = url[ 0 ] + 'wc-admin#' + base + search;
 		item.href = href;
 	} );
 };
